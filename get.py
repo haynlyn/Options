@@ -34,28 +34,34 @@ def main():
         options_exp_dates = ticker.options
 
         for date in options_exp_dates:
-            print(f"Downloading {symbol}@{date} option data.")
-            now, data = get_options_data(ticker, date)
-            ts = now.timestamp()
-            tzname = now.tzname()
-            calls, puts, underlying = data
+            try:
+                print(f"Downloading {symbol}@{date} option data.")
+                now, data = get_options_data(ticker, date)
+                ts = now.timestamp()
+                tzname = now.tzname()
+                calls, puts, underlying = data
     
-            # filename = f"{symbol}@{date}_{iso_to_mine(now.isoformat())}.json"
+                # filename = f"{symbol}@{date}_{iso_to_mine(now.isoformat())}.json"
 
-            filename_prefix = f"{symbol}@{date}_{iso_to_mine(now.isoformat())}"
+                filename_prefix = f"{symbol}@{date}_{iso_to_mine(now.isoformat())}"
 
-            calls.to_csv(DOWNLOAD_DIRS/f"{filename_prefix}_calls.csv")
-            puts.to_csv(DOWNLOAD_DIRS/f"{filename_prefix}_puts.csv")
+                calls.to_csv(DOWNLOAD_DIRS/f"{filename_prefix}_calls.csv")
+                puts.to_csv(DOWNLOAD_DIRS/f"{filename_prefix}_puts.csv")
+            except Exception as e:
+                print(e)
 
-        to_save = {'ts': ts, 'tz': tzname,
+        try:
+            to_save = {'ts': ts, 'tz': tzname,
                        'symbol': symbol, 'exp_date': date,
                         # 'calls': calls.to_dict(),
                         # 'puts': puts.to_dict(),
                         'underlying': underlying}
 
+            with open(DOWNLOAD_DIRS/f"{filename_prefix}_stock.json", 'w') as wf:
+                json.dump(to_save, wf)
 
-        with open(DOWNLOAD_DIRS/f"{filename_prefix}_stock.json", 'w') as wf:
-            json.dump(to_save, wf)
+        except Exception as e:
+            print(e)
 
 if __name__ == "__main__":
     main()

@@ -1,1 +1,1 @@
-*/30 9-15 * * * cd ~/Projects/Options && ./.venv/bin/python ./get.py
+*/5 14-22 * * 1-5 cd ~/Options && ./.venv/bin/python ./get.py
